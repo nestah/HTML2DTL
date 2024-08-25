@@ -37,5 +37,13 @@ Here’s a quick look at the application:
     ```bash
      python -m venv venv
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-  
+
+ 3. **Install required libraries:**
+    ```bash
+    pip install -r requirements.txt
+
+ 4. **Run django development server:**
+    ```bash
+    python manage.py runserver
+ 
    
