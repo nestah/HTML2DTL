@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+
+        .code-container {
+            height: 50vh;
+            overflow-y: auto;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .hidden {
+            display: none;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+            justify-content: center;
+            height: 1.5rem;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #4caf50;
+            transition: width 8s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex flex-col items-center justify-center min-h-screen">
+    <div class="absolute top-4 left-4">
+        <h1 class="text-4xl font-bold text-white">HTML2DTL</h1>
+    </div>
+    <main class="flex flex-col items-center justify-center w-full">
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-semibold text-gray-300">Conversion Result</h2>
+    </div>
+    <div id="progress-container" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar">0%</div>
+        </div>
+        <p class="text-gray-600 mt-2">Compiling...</p>
+    </div>
+    <div id="result-container" class="hidden bg-white p-8 rounded-lg shadow-md w-full max-w-4xl text-center">
+        <div class="code-container mb-4 text-left relative">
+            <pre><code>{{ dtl_content }}</code></pre>
+            <button onclick="copyCode()" class="absolute top-2 right-2 bg-blue-500 text-white py-1 px-2 rounded text-sm">Copy</button>
+        </div>
+        <a href="{% url 'download_dtl' dtl_file_name %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300">Download Converted File</a>
+        <br>
+        <a href="{% url 'upload_file' %}" class="mt-4 inline-block bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300">Convert Another File</a>
+    </div>
+</main>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = document.getElementById('progress-container');
+    const resultContainer = document.getElementById('result-container');
+    const containerWidth = progressContainer.offsetWidth;
+    let progress = 0;
+    const totalSteps = 100; // Increase total steps for smoother animation
+
+    const interval = setInterval(() => {
+        if (progress >= 100) {
+            clearInterval(interval);
+            progressContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+        } else {
+            progress++;
+            const barWidth = (progress / 45) * containerWidth;
+            progressBar.style.width = barWidth + 'px';
+            
+            // Only update text every 10%
+            if (progress % 10 === 0) {
+                progressBar.textContent = progress + '%';
+            }
+        }
+    }, 100); // 10 seconds total (100ms * 100 steps)
+});
+
+        function copyCode() {
+            const codeElement = document.querySelector('code');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Code copied to clipboard!');
+        }
+    </script>
+     <footer class="bg-gray-800 text-white mt-8 w-full">
+        <div class="container mx-auto py-4 flex justify-between items-center">
+            <p class="text-sm">&copy; 2024 HTML2DTL</p>
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/nestah" target="_blank" class="text-white hover:text-gray-400 transition duration-300">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 0C5.373 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 11.385.599.111.82-.26.82-.577 0-.285-.011-1.04-.017-2.04-3.338.726-4.042-1.607-4.042-1.607-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.204.084 1.837 1.236 1.837 1.236 1.07 1.835 2.806 1.305 3.492.997.109-.775.418-1.305.76-1.605-2.665-.303-5.466-1.333-5.466-5.931 0-1.31.469-2.381 1.235-3.221-.124-.303-.535-1.522.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.398 3.003-.403 1.02.005 2.047.137 3.006.403 2.29-1.552 3.297-1.23 3.297-1.23.654 1.654.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.806 5.624-5.479 5.92.43.371.813 1.104.813 2.224 0 1.607-.014 2.904-.014 3.298 0 .319.218.694.825.577C20.565 21.796 24 17.303 24 12c0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

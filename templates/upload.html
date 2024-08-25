@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload HTML File</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+            body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+
+        .toast {
+            visibility: hidden;
+            max-width: 50px;
+            height: 50px;
+            margin-left: -125px;
+            margin: auto;
+            background-color: #d70f0f;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            position: fixed;
+            z-index: 1;
+            bottom: 30px;
+            left: 50%;
+            font-size: 27px;
+            white-space: nowrap;
+        }
+        .toast #desc {
+            color: #fff;
+            padding: 16px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex flex-col items-center justify-center min-h-screen">
+    <div class="absolute top-4 left-4">
+        <h1 class="text-4xl font-bold text-white">HTML2DTL</h1>
+    </div>
+    <main class="flex flex-col items-center justify-center w-full">
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-semibold text-gray-300">HTML TO DJANGO (DTL) CONVERTER</h2>
+    </div>
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <form id="upload-form" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="text-center">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300">Upload</button>
+            </div>
+        </form>
+    </div>
+    </main>
+    <div id="toast" class="toast">
+        <div id="desc">Please upload a valid HTML file.</div>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            const fileInput = document.querySelector('input[type="file"]');
+            const filePath = fileInput.value;
+            const allowedExtensions = /(\.html)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                event.preventDefault();
+                showToast();
+            }
+        });
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.className = "show";
+            setTimeout(function() { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+    </script>
+    <footer class="bg-gray-800 text-white mt-8 w-full">
+        <div class="container mx-auto py-4 flex justify-between items-center">
+            <p class="text-sm">&copy; 2024 HTML2DTL</p>
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/nestah" target="_blank" class="text-white hover:text-gray-400 transition duration-300">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 0C5.373 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 11.385.599.111.82-.26.82-.577 0-.285-.011-1.04-.017-2.04-3.338.726-4.042-1.607-4.042-1.607-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.204.084 1.837 1.236 1.837 1.236 1.07 1.835 2.806 1.305 3.492.997.109-.775.418-1.305.76-1.605-2.665-.303-5.466-1.333-5.466-5.931 0-1.31.469-2.381 1.235-3.221-.124-.303-.535-1.522.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.398 3.003-.403 1.02.005 2.047.137 3.006.403 2.29-1.552 3.297-1.23 3.297-1.23.654 1.654.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.806 5.624-5.479 5.92.43.371.813 1.104.813 2.224 0 1.607-.014 2.904-.014 3.298 0 .319.218.694.825.577C20.565 21.796 24 17.303 24 12c0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+    
+</body>
+</html>
