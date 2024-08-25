@@ -33,3 +33,9 @@ Here’s a quick look at the application:
    git clone https://github.com/your-github-profile/html2dtl.git
    cd html2dtl
    
+2.  **Set up a virtual environment:**
+    ```bash
+     python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+  
+   
